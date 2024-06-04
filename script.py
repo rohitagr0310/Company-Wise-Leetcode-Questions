@@ -1,29 +1,37 @@
 import os
-import shutil
+import pandas as pd
 
 # Get the current working directory (where the script is executed)
 current_directory = os.getcwd()
 
-# Get the name of the script file
-script_file = os.path.basename(__file__)
+# Create an empty DataFrame to hold the combined data
+combined_df = pd.DataFrame()
 
-# List all files in the current directory
-files = os.listdir(current_directory)
+# Iterate over all folders in the current directory
+for folder in os.listdir(current_directory):
+    folder_path = os.path.join(current_directory, folder)
 
-# Iterate over each file
-for file in files:
-    if (
-        os.path.isfile(file) and file != script_file
-    ):  # Ensure it is a file and not the script itself
-        # Split the filename to extract the company name
-        company_name = file.split("_")[0]
+    if os.path.isdir(folder_path):  # Ensure it is a directory
+        # Iterate over all files in the company directory
+        for file in os.listdir(folder_path):
+            file_path = os.path.join(folder_path, file)
 
-        # Create the company directory if it doesn't exist
-        company_directory = os.path.join(current_directory, company_name)
-        if not os.path.exists(company_directory):
-            os.makedirs(company_directory)
+            if os.path.isfile(file_path) and file.endswith(
+                ".csv"
+            ):  # Ensure it is a CSV file
+                # Read the CSV file into a DataFrame
+                df = pd.read_csv(file_path)
 
-        # Move the file to the respective company directory
-        shutil.move(file, os.path.join(company_directory, file))
+                # Add a new column for the company name
+                df["Company"] = folder
 
-print("Files have been organized into their respective company folders.")
+                # Append the data to the combined DataFrame
+                combined_df = pd.concat([combined_df, df], ignore_index=True)
+
+# Define the output file path
+output_file = os.path.join(current_directory, "combined_file.csv")
+
+# Save the combined DataFrame to a new CSV file
+combined_df.to_csv(output_file, index=False)
+
+print(f"All files have been combined into {output_file}.")
