@@ -11,7 +11,7 @@ The purpose of this repository is to provide a centralized location for individu
 1. **Clone the Repository:**
 
    ```bash
-   git clone https://github.com/your-username/Company-Wise-Leetcode-Questions.git
+   git clone https://github.com/rohitagr0310/Company-Wise-Leetcode-Questions.git
    ```
 
 2. **Navigate to the Directory:**
